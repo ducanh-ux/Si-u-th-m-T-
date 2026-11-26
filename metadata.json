@@ -1,0 +1,6 @@
+{
+  "name": "Đêm mưa ở biệt thự Hoàng Gia",
+  "description": "Game trinh thám tương tác: điều tra vụ án mạng của ông Trần Quốc Bảo trong đêm mất điện tại biệt thự Hoàng Gia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

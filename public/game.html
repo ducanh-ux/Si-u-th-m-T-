@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siêu Thám Tử</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&family=Bitter:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#13202b;--panel:#1c2d3b;--paper:#e4e1d8;--ink:#1d2430;--thread:#d1493b;--mute:#8fa3b3;--line:#2f4558;--ok:#6fbf8e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:#dfe7ee;font:16px/1.6 'Be Vietnam Pro',system-ui,sans-serif;background-size:cover;background-position:center;background-attachment:fixed}
+h1,h2,h3{font-family:'Bitter',Georgia,serif;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 80px}
+header h1{font-size:1.7rem;font-weight:800}
+header p{color:var(--mute);margin:.4rem 0 0}
+.head-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tool-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;background:var(--panel);border:1px solid var(--line);color:var(--mute);border-radius:6px;padding:7px 12px;font:600 .85rem 'Be Vietnam Pro',system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.tool-btn:hover{border-color:var(--mute);color:#fff}
+.tool-btn.on{color:#fff;border-color:var(--thread)}
+.tool-btn svg{width:15px;height:15px;flex-shrink:0}
+nav{display:flex;gap:6px;margin:18px 0;border-bottom:1px solid var(--line);overflow-x:auto;align-items:center;-webkit-overflow-scrolling:touch}
+nav[hidden]{display:none}
+nav button{background:none;border:0;color:var(--mute);font:inherit;padding:11px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;min-height:44px}
+nav button.on{color:#fff;border-color:var(--thread)}
+nav button.reset{margin-left:auto;font-size:.9rem;color:var(--mute);border-bottom-color:transparent}
+nav button.reset:hover{color:#fff}
+nav button.reset.confirm{color:var(--thread);font-weight:600}
+button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.case-list{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.case-card{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);color:#dfe7ee;font:inherit;padding:16px 18px;border-radius:6px;cursor:pointer;min-height:76px;transition:border-color .15s ease,transform .15s ease}
+.case-card:hover{border-color:var(--thread);transform:translateY(-1px)}
+.case-card:active{transform:translateY(0)}
+.case-main{display:flex;align-items:center;gap:14px;min-width:0;flex:1}
+.case-cover{width:76px;height:76px;object-fit:cover;border-radius:5px;border:1px solid var(--line);flex-shrink:0;background:var(--bg)}
+.case-cover[hidden]{display:none}
+.case-meta{display:block;font-size:.8rem;color:var(--mute);margin-bottom:3px}
+.case-title{display:block;font-family:'Bitter',Georgia,serif;font-size:1.15rem;font-weight:800;color:#fff}
+.case-summary{display:block;color:var(--mute);margin-top:4px;font-size:.94rem}
+.case-arrow{color:var(--mute);flex-shrink:0;font-size:1.2rem;line-height:1}
+.case-card:hover .case-arrow{color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{background:var(--panel);border:1px solid var(--line);color:#dfe7ee;border-radius:20px;padding:8px 14px;min-height:40px;font:inherit;cursor:pointer}
+.chip.on{background:var(--thread);border-color:var(--thread);color:#fff}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin:12px 0}
+.box.loc-desc{background:#243d52;border-color:#3b5d7a;color:#edf4fa}
+.loc-banner{margin:12px 0 0;border-radius:6px 6px 0 0;overflow:hidden;border:1px solid #3b5d7a;border-bottom:0;background:var(--panel)}
+.loc-banner[hidden]{display:none}
+.loc-banner img{display:block;width:100%;max-height:220px;object-fit:cover}
+.loc-banner:not([hidden]) + .box.loc-desc{margin-top:0;border-top-left-radius:0;border-top-right-radius:0}
+.sus-box{display:flex;gap:14px;align-items:flex-start}
+.sus-img{width:84px;height:104px;object-fit:cover;border-radius:5px;border:1px solid var(--line);flex-shrink:0;background:var(--bg)}
+.sus-img[hidden]{display:none}
+.sus-info{min-width:0;flex:1}
+.sus-info p{margin:.5rem 0 0}
+.act{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);color:#dfe7ee;font:inherit;padding:12px 14px;min-height:46px;border-radius:6px;margin:8px 0;cursor:pointer}
+.act:hover{border-color:var(--mute)}
+.act.done{cursor:default;background:transparent;border-style:dashed}
+.act .res{display:block;color:#fff;margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+.q{color:var(--mute)} .a{color:#fff;margin:2px 0 10px}
+.card{background:var(--paper);color:var(--ink);border-left:6px solid var(--thread);border-radius:3px;padding:10px 14px;margin:10px 0}
+.card b{font-family:'Bitter',serif}
+.card small{display:block;margin-top:4px}
+.lbl{display:flex;gap:10px;align-items:flex-start;padding:10px 0;cursor:pointer;min-height:44px}
+.lbl input{margin-top:4px;width:18px;height:18px;flex-shrink:0}
+.go{background:var(--thread);color:#fff;border:0;border-radius:6px;font:600 1rem 'Be Vietnam Pro',sans-serif;padding:12px 22px;min-height:46px;cursor:pointer;margin-top:10px}
+.go:disabled{opacity:.4;cursor:not-allowed}
+.btn-sec{background:var(--panel);color:#dfe7ee;border:1px solid var(--line);border-radius:6px;font:600 1rem 'Be Vietnam Pro',sans-serif;padding:12px 20px;min-height:46px;cursor:pointer;margin-top:10px}
+.btn-sec:hover{border-color:var(--mute);color:#fff}
+.end-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.muted{color:var(--mute)}
+.end{border:2px solid var(--line);border-radius:6px;padding:16px;margin-top:16px}
+.end.win{border-color:var(--ok)} .end.lose{border-color:var(--thread)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--paper);color:var(--ink);padding:10px 18px;border-radius:6px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+@media (max-width:520px){
+  .wrap{padding:16px 14px 72px}
+  header h1{font-size:1.45rem}
+  .head-actions{width:100%}
+  .tool-btn{flex:1;justify-content:center}
+  .end-actions button{flex:1;min-width:140px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header>
+    <div class="head-top">
+      <h1 id="title">Siêu Thám Tử</h1>
+      <div class="head-actions">
+        <button id="switchBtn" class="tool-btn" type="button" data-action="switch-case" hidden>Đổi vụ án</button>
+        <button id="sndBtn" class="tool-btn" type="button" data-action="toggle-audio" aria-pressed="false"></button>
+      </div>
+    </div>
+    <p id="intro"></p>
+  </header>
+  <nav id="nav" hidden></nav>
+  <main id="main"></main>
+</div>
+<div id="toast" role="status"></div>
+
+<script type="module">
+import { loadCases } from "./cases/index.js";
+
+/* ============================================================
+   LOGIC GAME — tự động nạp các vụ án từ cases/index.js
+   ============================================================ */
+const SAVE_KEY = "hoang_gia_active_session_v2";
+const LEGACY_KEY = "hoang_gia_case_save_v1";
+let CASES = [];
+let CASE = null;
+let S = null;
+let confirmReset = false;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, ch => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+}[ch]));
+
+const has = id => Boolean(S && S.clues.includes(id));
+const hasProgress = () => Boolean(
+  S && (
+    S.clues.length > 0 ||
+    Object.keys(S.done).length > 0 ||
+    Object.keys(S.log).length > 0 ||
+    S.sel.culprit !== null ||
+    S.sel.ev.length > 0 ||
+    S.end !== null
+  )
+);
+
+const toast = msg => {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast.h);
+  toast.h = setTimeout(() => t.classList.remove("show"), 2200);
+};
+
+const gain = id => {
+  if (id && CASE && CASE.clues[id] && !has(id)) {
+    S.clues.push(id);
+    toast("Manh mối mới: " + CASE.clues[id].name);
+  }
+};
+
+function createFreshState(caseData) {
+  return {
+    caseId: caseData.id,
+    tab: "scene",
+    loc: caseData.locations[0].id,
+    sus: caseData.suspects[0].id,
+    clues: [],
+    done: {},
+    log: {},
+    sel: { culprit: null, ev: [] },
+    end: null
+  };
+}
+
+function clearSavedSession() {
+  try {
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(LEGACY_KEY);
+  } catch {}
+}
+
+function saveSession() {
+  try {
+    if (!CASE || !S) {
+      localStorage.removeItem(SAVE_KEY);
+      return;
+    }
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ caseId: CASE.id, state: S }));
+  } catch {}
+}
+
+function tryRestoreSession() {
+  try {
+    localStorage.removeItem(LEGACY_KEY);
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (!saved || typeof saved !== "object" || !saved.caseId || !saved.state) return false;
+
+    const target = CASES.find(c => c.id === saved.caseId);
+    if (!target) {
+      localStorage.removeItem(SAVE_KEY);
+      return false;
+    }
+
+    const fresh = createFreshState(target);
+    const data = saved.state;
+    if (["scene", "people", "notes", "accuse"].includes(data.tab)) fresh.tab = data.tab;
+    if (target.locations.some(l => l.id === data.loc)) fresh.loc = data.loc;
+    if (target.suspects.some(s => s.id === data.sus)) fresh.sus = data.sus;
+    if (Array.isArray(data.clues)) {
+      fresh.clues = [...new Set(data.clues.filter(id => typeof id === "string" && target.clues[id]))];
+    }
+    if (data.done && typeof data.done === "object" && !Array.isArray(data.done)) {
+      for (const [k, v] of Object.entries(data.done)) {
+        if (v === true) fresh.done[k] = true;
+      }
+    }
+    if (data.log && typeof data.log === "object" && !Array.isArray(data.log)) {
+      for (const [pid, entries] of Object.entries(data.log)) {
+        if (target.suspects.some(s => s.id === pid) && Array.isArray(entries)) {
+          fresh.log[pid] = entries
+            .filter(item => item && typeof item.name === "string" && typeof item.a === "string")
+            .map(item => ({ name: item.name, a: item.a }));
+        }
+      }
+    }
+    if (data.sel && typeof data.sel === "object") {
+      fresh.sel.culprit = target.suspects.some(s => s.id === data.sel.culprit) ? data.sel.culprit : null;
+      if (Array.isArray(data.sel.ev)) {
+        fresh.sel.ev = [...new Set(data.sel.ev.filter(id => fresh.clues.includes(id)))].slice(0, target.solution.maxEvidence);
+      }
+    }
+    if (data.end && (data.end.kind === "win" || data.end.kind === "lose") && typeof data.end.text === "string") {
+      fresh.end = { kind: data.end.kind, text: data.end.text };
+    }
+
+    CASE = target;
+    S = fresh;
+    return hasProgress();
+  } catch {
+    return false;
+  }
+}
+
+function openCase(caseId) {
+  const target = CASES.find(c => c.id === caseId);
+  if (!target) return;
+  confirmReset = false;
+  clearSavedSession();
+  CASE = target;
+  S = createFreshState(target);
+  render();
+}
+
+function leaveCase() {
+  confirmReset = false;
+  CASE = null;
+  S = null;
+  clearSavedSession();
+  render();
+}
+
+function resetCurrentCase() {
+  if (!CASE) return;
+  confirmReset = false;
+  S = createFreshState(CASE);
+  render();
+  toast("Đã bắt đầu lại vụ án.");
+}
+
+function requestReset() {
+  if (!confirmReset) {
+    confirmReset = true;
+    render(true);
+    return;
+  }
+  resetCurrentCase();
+}
+
+function render(keepConfirm = false) {
+  if (!keepConfirm) confirmReset = false;
+  saveSession();
+
+  const nav = $("#nav");
+  const switchBtn = $("#switchBtn");
+
+  if (!CASE || !S) {
+    document.body.style.backgroundImage = "";
+    document.title = "Siêu Thám Tử";
+    $("#title").textContent = "Siêu Thám Tử";
+    $("#intro").textContent = "Chọn một vụ án bên dưới để bắt đầu điều tra.";
+    switchBtn.hidden = true;
+    nav.hidden = true;
+    nav.innerHTML = "";
+    $("#main").innerHTML = viewCaseSelect();
+    return;
+  }
+
+  document.body.style.backgroundImage = CASE.pageBg
+    ? `linear-gradient(rgba(19, 32, 43, 0.86), rgba(19, 32, 43, 0.94)), url("${CASE.pageBg.replace(/"/g, '\\"')}")`
+    : "";
+  document.title = `${CASE.title} · Siêu Thám Tử`;
+  $("#title").textContent = CASE.title;
+  $("#intro").textContent = CASE.intro;
+  switchBtn.hidden = false;
+  nav.hidden = false;
+
+  const tabs = [
+    ["scene", "Hiện trường"],
+    ["people", "Nghi phạm"],
+    ["notes", "Sổ tay (" + S.clues.length + ")"],
+    ["accuse", "Buộc tội"]
+  ];
+  const resetBtn = hasProgress()
+    ? `<button type="button" class="reset ${confirmReset ? "confirm" : ""}" data-action="request-reset">${confirmReset ? "Xác nhận chơi lại?" : "Chơi lại"}</button>`
+    : "";
+
+  nav.innerHTML = tabs.map(([k, n]) =>
+    `<button type="button" class="${S.tab === k ? "on" : ""}" data-action="tab" data-id="${esc(k)}">${esc(n)}</button>`
+  ).join("") + resetBtn;
+
+  $("#main").innerHTML = { scene: viewScene, people: viewPeople, notes: viewNotes, accuse: viewAccuse }[S.tab]();
+}
+
+function viewCaseSelect() {
+  if (!CASES.length) {
+    return `<p class="muted">Chưa có vụ án nào trong danh sách.</p>`;
+  }
+  const cards = CASES.map((c, idx) => {
+    const num = String(idx + 1).padStart(2, "0");
+    const cover = c.cover
+      ? `<img class="case-cover" src="${esc(c.cover)}" alt="${esc(c.title)}" loading="lazy" onerror="this.hidden=true">`
+      : "";
+    return `<button type="button" class="case-card" data-action="open-case" data-id="${esc(c.id)}">
+      <span class="case-main">
+        ${cover}
+        <span>
+          <span class="case-meta">Vụ án ${num}</span>
+          <span class="case-title">${esc(c.title)}</span>
+          <span class="case-summary">${esc(c.blurb || c.summary || c.intro)}</span>
+        </span>
+      </span>
+      <span class="case-arrow" aria-hidden="true">&#8594;</span>
+    </button>`;
+  }).join("");
+  return `<div class="case-list">${cards}</div>`;
+}
+
+function viewScene() {
+  const L = CASE.locations.find(l => l.id === S.loc) || CASE.locations[0];
+  const chips = CASE.locations.map(l =>
+    `<button type="button" class="chip ${l.id === L.id ? "on" : ""}" data-action="loc" data-id="${esc(l.id)}">${esc(l.name)}</button>`
+  ).join("");
+  const banner = L.bg
+    ? `<div class="loc-banner"><img src="${esc(L.bg)}" alt="${esc(L.name)}" loading="lazy" onerror="this.parentElement.hidden=true"></div>`
+    : "";
+  const items = L.items.map((it, i) => {
+    if (it.needs && !has(it.needs)) return "";
+    const k = "loc:" + L.id + ":" + i;
+    const d = S.done[k];
+    return d
+      ? `<div class="act done">${esc(it.label)}<span class="res">${esc(it.text)}</span></div>`
+      : `<button type="button" class="act" data-action="search" data-loc="${esc(L.id)}" data-idx="${i}">${esc(it.label)}</button>`;
+  }).join("");
+  return `<div class="row">${chips}</div>${banner}<div class="box loc-desc">${esc(L.desc)}</div>${items}`;
+}
+
+function searchItem(locId, idx) {
+  const loc = CASE.locations.find(l => l.id === locId);
+  const it = loc && loc.items[idx];
+  if (!it) return;
+  S.done["loc:" + locId + ":" + idx] = true;
+  gain(it.clue);
+  render();
+}
+
+function viewPeople() {
+  const P = CASE.suspects.find(s => s.id === S.sus) || CASE.suspects[0];
+  const chips = CASE.suspects.map(s =>
+    `<button type="button" class="chip ${s.id === P.id ? "on" : ""}" data-action="sus" data-id="${esc(s.id)}">${esc(s.name)}</button>`
+  ).join("");
+  const qs = P.questions.map((q, i) => {
+    if (q.needs && !has(q.needs)) return "";
+    const k = "sus:" + P.id + ":" + i;
+    return S.done[k]
+      ? `<div class="q">Bạn: ${esc(q.q)}</div><div class="a">${esc(P.name)}: ${esc(q.a)}</div>`
+      : `<button type="button" class="act" data-action="ask" data-sus="${esc(P.id)}" data-idx="${i}">${esc(q.q)}</button>`;
+  }).join("");
+  const cf = !P.confront ? "" : `<h3 style="margin-top:22px">Đưa bằng chứng đối chất</h3>` +
+    (S.clues.length
+      ? `<div class="row">${S.clues.map(id => `<button type="button" class="chip" data-action="confront" data-sus="${esc(P.id)}" data-clue="${esc(id)}">${esc(CASE.clues[id].name)}</button>`).join("")}</div>`
+      : `<p class="muted">Bạn chưa có bằng chứng nào để đưa ra.</p>`) +
+    (S.log[P.id] || []).map(l => `<div class="q">Bạn đưa ra: ${esc(l.name)}</div><div class="a">${esc(P.name)}: ${esc(l.a)}</div>`).join("");
+  const portrait = P.img
+    ? `<img class="sus-img" src="${esc(P.img)}" alt="${esc(P.name)}" loading="lazy" onerror="this.hidden=true">`
+    : "";
+  return `<div class="row">${chips}</div><div class="box sus-box">${portrait}<div class="sus-info"><h3>${esc(P.name)}</h3><div class="muted">${esc(P.role)}</div><p>${esc(P.bio)}</p></div></div>${qs}${cf}`;
+}
+
+function askQuestion(pid, idx) {
+  const person = CASE.suspects.find(s => s.id === pid);
+  const q = person && person.questions[idx];
+  if (!q) return;
+  S.done["sus:" + pid + ":" + idx] = true;
+  gain(q.clue);
+  render();
+}
+
+function confrontSuspect(pid, cid) {
+  const P = CASE.suspects.find(s => s.id === pid);
+  if (!P || !CASE.clues[cid]) return;
+  const e = (P.confront || []).find(x => x.with === cid);
+  const ok = Boolean(e && (!e.after || S.done["cf:" + pid + ":" + e.after]));
+  const a = ok ? e.a : (P.deny || "Cái đó không liên quan đến tôi.");
+  if (ok) {
+    S.done["cf:" + pid + ":" + cid] = true;
+    gain(e.clue);
+  }
+  (S.log[pid] = S.log[pid] || []).push({ name: CASE.clues[cid].name, a });
+  render();
+}
+
+function viewNotes() {
+  if (!S.clues.length) {
+    return `<p class="muted">Sổ tay còn trống. Hãy khám xét hiện trường và thẩm vấn nghi phạm.</p>`;
+  }
+  return S.clues.map(id =>
+    `<div class="card"><b>${esc(CASE.clues[id].name)}</b><small>${esc(CASE.clues[id].text)}</small></div>`
+  ).join("");
+}
+
+function viewAccuse() {
+  if (S.end) return endBox();
+  const who = CASE.suspects.map(s =>
+    `<label class="lbl"><input type="radio" name="w" data-action="pick-culprit" value="${esc(s.id)}" ${S.sel.culprit === s.id ? "checked" : ""}><span><b>${esc(s.name)}</b> <span class="muted">${esc(s.role)}</span></span></label>`
+  ).join("");
+  const max = CASE.solution.maxEvidence;
+  const full = S.sel.ev.length >= max;
+  const ev = S.clues.length
+    ? S.clues.map(id => {
+        const on = S.sel.ev.includes(id);
+        return `<label class="lbl"><input type="checkbox" data-action="toggle-ev" value="${esc(id)}" ${on ? "checked" : ""} ${full && !on ? "disabled" : ""}><span>${esc(CASE.clues[id].name)}</span></label>`;
+      }).join("")
+    : `<p class="muted">Bạn chưa có manh mối nào.</p>`;
+  return `<h3>Ai là hung thủ?</h3>${who}<h3 style="margin-top:20px">Bằng chứng nộp cho tòa</h3><p class="muted">Đã chọn ${S.sel.ev.length}/${max}. Chỉ được nộp tối đa ${max} bằng chứng.</p>${ev}
+    <button type="button" class="go" data-action="accuse" ${S.sel.culprit ? "" : "disabled"}>Buộc tội</button>`;
+}
+
+function toggleEv(id) {
+  const a = S.sel.ev;
+  const i = a.indexOf(id);
+  if (i >= 0) a.splice(i, 1);
+  else if (a.length < CASE.solution.maxEvidence) a.push(id);
+  render();
+}
+
+function accuse() {
+  const sol = CASE.solution;
+  const ok = S.sel.culprit === sol.culprit && sol.keyClues.every(c => S.sel.ev.includes(c));
+  S.end = ok ? { kind: "win", text: sol.win } : { kind: "lose", text: sol.lose };
+  render();
+}
+
+function endBox() {
+  const win = S.end.kind === "win";
+  const actions = win
+    ? `<button type="button" class="go" data-action="reset-case">Chơi lại</button>
+       <button type="button" class="btn-sec" data-action="switch-case">Quay lại danh sách</button>`
+    : `<button type="button" class="go" data-action="back-investigate">Quay lại điều tra</button>`;
+  return `<div class="end ${esc(S.end.kind)}"><h2>${win ? "Vụ án đã được phá" : "Chưa thể kết án"}</h2><p>${esc(S.end.text)}</p><div class="end-actions">${actions}</div></div>`;
+}
+
+/* ============================================================
+   XỬ LÝ SỰ KIỆN TẬP TRUNG
+   ============================================================ */
+$("#app").addEventListener("click", e => {
+  const el = e.target.closest("[data-action]");
+  if (!el) return;
+  const action = el.dataset.action;
+  if (action === "toggle-audio") return toggleAudio();
+  if (action === "open-case") return openCase(el.dataset.id);
+  if (action === "switch-case") return leaveCase();
+  if (!CASE || !S) return;
+
+  if (action === "tab") { S.tab = el.dataset.id; render(); }
+  else if (action === "loc") { S.loc = el.dataset.id; render(); }
+  else if (action === "sus") { S.sus = el.dataset.id; render(); }
+  else if (action === "search") { searchItem(el.dataset.loc, Number(el.dataset.idx)); }
+  else if (action === "ask") { askQuestion(el.dataset.sus, Number(el.dataset.idx)); }
+  else if (action === "confront") { confrontSuspect(el.dataset.sus, el.dataset.clue); }
+  else if (action === "accuse") { accuse(); }
+  else if (action === "request-reset") { requestReset(); }
+  else if (action === "reset-case") { resetCurrentCase(); }
+  else if (action === "back-investigate") { S.end = null; render(); }
+});
+
+$("#app").addEventListener("change", e => {
+  const el = e.target;
+  if (!CASE || !S || !el || !el.dataset) return;
+  if (el.dataset.action === "pick-culprit") { S.sel.culprit = el.value; render(); }
+  else if (el.dataset.action === "toggle-ev") { toggleEv(el.value); }
+});
+
+/* ============================================================
+   NHẠC NỀN: just call — numbthefeelings (freetouse.com)
+   ============================================================ */
+const AUDIO_KEY = "hoang_gia_audio_v1";
+const BGM_SRC = "./assets/aistudio/numbthefeelings_-_just_call__freetouse.com__d28b2cee.mp3";
+const BGM_VOL = 0.45;
+const BGM = {
+  el: null,
+  fadeRaf: null,
+  playing: false,
+  pref: (() => { try { return localStorage.getItem(AUDIO_KEY) !== "off"; } catch { return true; } })()
+};
+
+function updateAudioBtn() {
+  const btn = $("#sndBtn");
+  if (!btn) return;
+  const on = BGM.playing;
+  btn.classList.toggle("on", on);
+  btn.setAttribute("aria-pressed", String(on));
+  btn.title = on ? "Tắt nhạc nền" : "Bật nhạc nền";
+  const icon = on
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+  btn.innerHTML = icon + `<span>${on ? "Nhạc nền: Bật" : "Nhạc nền: Tắt"}</span>`;
+}
+
+function getAudioEl() {
+  if (BGM.el) return BGM.el;
+  const audio = new Audio(BGM_SRC);
+  audio.loop = true;
+  audio.preload = "auto";
+  audio.volume = 0;
+  audio.addEventListener("ended", () => {
+    if (BGM.playing) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    }
+  });
+  BGM.el = audio;
+  return audio;
+}
+
+function fadeVolume(audio, target, durationMs, onDone) {
+  cancelAnimationFrame(BGM.fadeRaf);
+  const startVol = audio.volume;
+  const startTime = performance.now();
+  function step(now) {
+    const t = Math.min(1, (now - startTime) / durationMs);
+    audio.volume = Math.max(0, Math.min(1, startVol + (target - startVol) * t));
+    if (t < 1) {
+      BGM.fadeRaf = requestAnimationFrame(step);
+    } else if (onDone) {
+      onDone();
+    }
+  }
+  BGM.fadeRaf = requestAnimationFrame(step);
+}
+
+function startAudio() {
+  const audio = getAudioEl();
+  BGM.playing = true;
+  updateAudioBtn();
+  const p = audio.play();
+  if (p && typeof p.then === "function") {
+    p.then(() => {
+      if (BGM.playing) fadeVolume(audio, BGM_VOL, 550);
+    }).catch(() => {
+      BGM.playing = false;
+      updateAudioBtn();
+    });
+  } else {
+    fadeVolume(audio, BGM_VOL, 550);
+  }
+}
+
+function stopAudio() {
+  BGM.playing = false;
+  updateAudioBtn();
+  if (!BGM.el) return;
+  const audio = BGM.el;
+  fadeVolume(audio, 0, 240, () => {
+    if (!BGM.playing) audio.pause();
+  });
+}
+
+function toggleAudio() {
+  if (BGM.playing) {
+    BGM.pref = false;
+    try { localStorage.setItem(AUDIO_KEY, "off"); } catch {}
+    stopAudio();
+  } else {
+    BGM.pref = true;
+    try { localStorage.setItem(AUDIO_KEY, "on"); } catch {}
+    startAudio();
+  }
+}
+
+function unlockAudio(e) {
+  if (e && e.target && e.target.closest && e.target.closest("#sndBtn")) return;
+  if (BGM.pref && !BGM.playing) startAudio();
+}
+document.addEventListener("pointerdown", unlockAudio);
+document.addEventListener("keydown", unlockAudio);
+document.addEventListener("visibilitychange", () => {
+  if (!BGM.el) return;
+  if (document.hidden) {
+    cancelAnimationFrame(BGM.fadeRaf);
+    BGM.el.pause();
+  } else if (BGM.playing) {
+    BGM.el.volume = BGM_VOL;
+    BGM.el.play().catch(() => {});
+  }
+});
+
+/* ============================================================
+   KHỞI ĐỘNG ỨNG DỤNG
+   ============================================================ */
+async function init() {
+  updateAudioBtn();
+  try {
+    CASES = await loadCases();
+    const restored = tryRestoreSession();
+    render();
+    if (restored) toast("Đã khôi phục tiến trình điều tra.");
+  } catch (err) {
+    console.error(err);
+    $("#main").innerHTML = `<p class="muted">Không thể tải danh sách vụ án. Hãy kiểm tra lại các file trong thư mục cases/.</p>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
